@@ -1,4 +1,4 @@
 export interface MousePosition {
-    x: number; 
+    x: number;
     y: number;
 }

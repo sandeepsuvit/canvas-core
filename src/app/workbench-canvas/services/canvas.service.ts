@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, of } from 'rxjs';
-import { pairwise, switchMap, takeUntil, tap, share } from 'rxjs/operators';
+import { pairwise, share, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MousePosition } from '../interfaces/mouse-position.interface';
 
 @Injectable()
@@ -71,39 +71,39 @@ export class CanvasService {
 
     // this will capture all touch events from the canvas element
     fromEvent(canvasEl, 'touchstart')
-    .pipe(
-      switchMap((e) => {
-        // after a touch, we'll record all moves
-        return fromEvent(canvasEl, 'touchmove')
-        .pipe(
-          // we'll stop (and unsubscribe) once the user releases touch
-          // this will trigger a 'touchend' event
-          takeUntil(fromEvent(canvasEl, 'touchend')),
-          // we'll also stop (and unsubscribe) once the touch leaves the canvas (touchcancel event)
-          takeUntil(fromEvent(canvasEl, 'touchcancel')),
-          // pairwise lets us get the previous value to draw a line from
-          // the previous point to the current point
-          pairwise()
-        )
-      })
-    )
-    .subscribe((res: [TouchEvent, TouchEvent]) => {
-      const rect = canvasEl.getBoundingClientRect();
+      .pipe(
+        switchMap((e) => {
+          // after a touch, we'll record all moves
+          return fromEvent(canvasEl, 'touchmove')
+            .pipe(
+              // we'll stop (and unsubscribe) once the user releases touch
+              // this will trigger a 'touchend' event
+              takeUntil(fromEvent(canvasEl, 'touchend')),
+              // we'll also stop (and unsubscribe) once the touch leaves the canvas (touchcancel event)
+              takeUntil(fromEvent(canvasEl, 'touchcancel')),
+              // pairwise lets us get the previous value to draw a line from
+              // the previous point to the current point
+              pairwise()
+            )
+        })
+      )
+      .subscribe((res: [TouchEvent, TouchEvent]) => {
+        const rect = canvasEl.getBoundingClientRect();
 
-      // previous and current position with the offset
-      const prevPos = {
-        x: res[0].changedTouches[0].clientX - rect.left,
-        y: res[0].changedTouches[0].clientY - rect.top
-      };
+        // previous and current position with the offset
+        const prevPos = {
+          x: res[0].changedTouches[0].clientX - rect.left,
+          y: res[0].changedTouches[0].clientY - rect.top
+        };
 
-      const currentPos = {
-        x: res[1].changedTouches[0].clientX - rect.left,
-        y: res[1].changedTouches[0].clientY - rect.top
-      };
+        const currentPos = {
+          x: res[1].changedTouches[0].clientX - rect.left,
+          y: res[1].changedTouches[0].clientY - rect.top
+        };
 
-      // Triggger draw event
-      this._drawOnCanvas(prevPos, currentPos, canvasCtx);
-    });
+        // Triggger draw event
+        this._drawOnCanvas(prevPos, currentPos, canvasCtx);
+      });
   }
 
   /**
@@ -117,21 +117,21 @@ export class CanvasService {
     const canvasCtx = canvasEl.getContext('2d');
 
     fromEvent(canvasEl, 'mousewheel')
-    .pipe(
-      tap((event) => event.preventDefault()),
-      switchMap((e) => of(e)),
-      share()
-    )
-    .subscribe((e: WheelEvent) => {
-      const rect = canvasEl.getBoundingClientRect();
-      const position = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      };
+      .pipe(
+        tap((event) => event.preventDefault()),
+        switchMap((e) => of(e)),
+        share()
+      )
+      .subscribe((e: WheelEvent) => {
+        const rect = canvasEl.getBoundingClientRect();
+        const position = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        };
 
-      // Handle zoom
-      this._zoomOnCanvas(position, e.deltaY < 0, canvasCtx);
-    });
+        // Handle zoom
+        this._zoomOnCanvas(position, e.deltaY < 0, canvasCtx);
+      });
   }
 
   /**
@@ -178,7 +178,7 @@ export class CanvasService {
    * @memberof CanvasService
    */
   private _zoomOnCanvas(position: MousePosition, isZoomIn: boolean, canvasCtx: CanvasRenderingContext2D) {
-    const zoomFactor = 1.1;
+    const zoomFactor = 0.2;
 
     // incase the context is not set
     if (!canvasCtx) { return; }
@@ -208,13 +208,13 @@ export class CanvasService {
     }
   }
 
-//   redrawContext(canvasCtx: CanvasRenderingContext2D){
-//     canvasCtx.clearRect(0, 0, canvas_width, canvas_height);
-//     canvasCtx.save()
-//     canvasCtx.scale(self.data.zoom, self.data.zoom) // 
-//     canvasCtx.translate(self.data.position.left, self.data.position.top) // position second
-//     // Here We draw useful scene My task - image:
-//     canvasCtx.drawImage(self.img ,0, 0) // position 0,0 - we already prepared
-//     canvasCtx.restore(); // Restore!!!
-//  }
+  //   redrawContext(canvasCtx: CanvasRenderingContext2D){
+  //     canvasCtx.clearRect(0, 0, canvas_width, canvas_height);
+  //     canvasCtx.save()
+  //     canvasCtx.scale(self.data.zoom, self.data.zoom) // 
+  //     canvasCtx.translate(self.data.position.left, self.data.position.top) // position second
+  //     // Here We draw useful scene My task - image:
+  //     canvasCtx.drawImage(self.img ,0, 0) // position 0,0 - we already prepared
+  //     canvasCtx.restore(); // Restore!!!
+  //  }
 }

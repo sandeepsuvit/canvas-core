@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { WorkbenchComponent } from './workbench.component';
+import { WorkbenchCanvasComponent } from './workbench-canvas.component';
 
 const routes: Routes = [{
   path: '',
-  component: WorkbenchComponent
+  component: WorkbenchCanvasComponent
 }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class WorkbenchRoutingModule { }
+export class WorkbenchCanvasRoutingModule { }

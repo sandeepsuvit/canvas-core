@@ -33,3 +33,6 @@ https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-t
 https://codepen.io/HunorMarton/post/handling-complex-mouse-and-touch-events-with-rxjs
 https://medium.com/@OlegVaraksin/efficient-design-patterns-for-event-handling-with-rxjs-d49b56d2ae36
 https://codepen.io/techslides/pen/zowLd
+
+### svg draw
+https://github.com/johandb/svg-drawing-tool

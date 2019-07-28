@@ -1,15 +1,12 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { CanvasService } from './service/canvas.service';
+import { CanvasService } from './services/canvas.service';
 
 @Component({
-  selector: 'app-workbench',
-  templateUrl: './workbench.component.html',
-  styleUrls: ['./workbench.component.scss']
+  selector: 'app-workbench-canvas',
+  templateUrl: './workbench-canvas.component.html',
+  styleUrls: ['./workbench-canvas.component.scss']
 })
-export class WorkbenchComponent implements OnInit, AfterViewInit {
-  // a reference to the canvas element from our template
-  // @ViewChild('canvas') public canvas: ElementRef;
-
+export class WorkbenchCanvasComponent implements OnInit, AfterViewInit {
   @ViewChild('board', { read: ViewContainerRef }) board: ViewContainerRef;
 
   // setting a width and height for the canvas
@@ -62,4 +59,5 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
+
 }
