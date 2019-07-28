@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { pairwise, switchMap, takeUntil } from 'rxjs/operators';
+import { MousePosition } from './interfaces/mouse-position.interface';
 
 @Component({
   selector: 'app-workbench',
@@ -97,15 +98,12 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
    * Draw events on the canvas
    *
    * @private
-   * @param {{ x: number, y: number }} prevPos
-   * @param {{ x: number, y: number }} currentPos
+   * @param MousePosition prevPos
+   * @param MousePosition currentPos
    * @returns
    * @memberof WorkbenchComponent
    */
-  private _drawOnCanvas(
-    prevPos: { x: number, y: number }, 
-    currentPos: { x: number, y: number }
-  ) {
+  private _drawOnCanvas(prevPos: MousePosition, currentPos: MousePosition) {
     // incase the context is not set
     if (!this.cx) { return; }
   
