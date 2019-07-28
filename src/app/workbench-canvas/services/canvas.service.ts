@@ -84,7 +84,7 @@ export class CanvasService {
               // pairwise lets us get the previous value to draw a line from
               // the previous point to the current point
               pairwise()
-            )
+            );
         })
       )
       .subscribe((res: [TouchEvent, TouchEvent]) => {
