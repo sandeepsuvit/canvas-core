@@ -47,7 +47,10 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
     this.cx.lineCap = 'round';
     this.cx.strokeStyle = '#000';
     
-    this._captureEvents(canvasEl);
+    // Register mouse click events
+    this._captureClickEvents(canvasEl);
+    // Register touch events
+    this._captureTouchEvents(canvasEl);
   }
 
   /**
@@ -57,7 +60,7 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
    * @param {HTMLCanvasElement} canvasEl
    * @memberof WorkbenchComponent
    */
-  private _captureEvents(canvasEl: HTMLCanvasElement) {
+  private _captureClickEvents(canvasEl: HTMLCanvasElement) {
     // this will capture all mousedown events from the canvas element
     fromEvent(canvasEl, 'mousedown')
       .pipe(
@@ -71,7 +74,7 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
               // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
               takeUntil(fromEvent(canvasEl, 'mouseleave')),
               // pairwise lets us get the previous value to draw a line from
-              // the previous point to the current point    
+              // the previous point to the current point
               pairwise()
             )
         })
@@ -92,6 +95,50 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
   
         this._drawOnCanvas(prevPos, currentPos);
       });
+  }
+
+   /**
+   * Capture touch events
+   *
+   * @private
+   * @param {HTMLCanvasElement} canvasEl
+   * @memberof WorkbenchComponent
+   */
+  private _captureTouchEvents(canvasEl: HTMLCanvasElement) {
+    // this will capture all touch events from the canvas element
+    fromEvent(canvasEl, 'touchstart')
+    .pipe(
+      switchMap((e) => {
+        // after a touch, we'll record all moves
+        return fromEvent(canvasEl, 'touchmove')
+        .pipe(
+          // we'll stop (and unsubscribe) once the user releases touch
+          // this will trigger a 'touchend' event
+          takeUntil(fromEvent(canvasEl, 'touchend')),
+          // we'll also stop (and unsubscribe) once the touch leaves the canvas (touchcancel event)
+          takeUntil(fromEvent(canvasEl, 'touchcancel')),
+          // pairwise lets us get the previous value to draw a line from
+          // the previous point to the current point
+          pairwise()
+        )
+      })
+    )
+    .subscribe((res: [TouchEvent, TouchEvent]) => {
+      const rect = canvasEl.getBoundingClientRect();
+
+      // previous and current position with the offset
+      const prevPos = {
+        x: res[0].touches[0].clientX - rect.left,
+        y: res[0].touches[0].clientY - rect.top
+      };
+
+      const currentPos = {
+        x: res[1].touches[0].clientX - rect.left,
+        y: res[1].touches[0].clientY - rect.top
+      };
+
+      this._drawOnCanvas(prevPos, currentPos);
+    });
   }
 
   /**
