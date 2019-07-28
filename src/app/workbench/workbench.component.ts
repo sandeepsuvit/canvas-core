@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { fromEvent } from 'rxjs';
-
-import { switchMap, takeUntil, pairwise } from 'rxjs/operators';
+import { pairwise, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-workbench',
@@ -27,6 +26,12 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
     this._initCanvas();
   }
 
+  /**
+   * Initialize the canvas properties
+   *
+   * @private
+   * @memberof WorkbenchComponent
+   */
   private _initCanvas() {
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -41,10 +46,16 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
     this.cx.lineCap = 'round';
     this.cx.strokeStyle = '#000';
     
-    // we'll implement this method to start capturing mouse events
     this._captureEvents(canvasEl);
   }
 
+  /**
+   * Capture mouse events
+   *
+   * @private
+   * @param {HTMLCanvasElement} canvasEl
+   * @memberof WorkbenchComponent
+   */
   private _captureEvents(canvasEl: HTMLCanvasElement) {
     // this will capture all mousedown events from the canvas element
     fromEvent(canvasEl, 'mousedown')
@@ -78,11 +89,19 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
           y: res[1].clientY - rect.top
         };
   
-        // this method we'll implement soon to do the actual drawing
         this._drawOnCanvas(prevPos, currentPos);
       });
   }
 
+  /**
+   * Draw events on the canvas
+   *
+   * @private
+   * @param {{ x: number, y: number }} prevPos
+   * @param {{ x: number, y: number }} currentPos
+   * @returns
+   * @memberof WorkbenchComponent
+   */
   private _drawOnCanvas(
     prevPos: { x: number, y: number }, 
     currentPos: { x: number, y: number }
