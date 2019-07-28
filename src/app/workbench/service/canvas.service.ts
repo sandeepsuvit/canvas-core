@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, of } from 'rxjs';
-import { pairwise, switchMap, takeUntil } from 'rxjs/operators';
+import { pairwise, switchMap, takeUntil, tap, share } from 'rxjs/operators';
 import { MousePosition } from '../interfaces/mouse-position.interface';
 
 @Injectable()
@@ -118,7 +118,11 @@ export class CanvasService {
     const canvasCtx = canvasEl.getContext('2d');
 
     fromEvent(canvasEl, 'mousewheel')
-    .pipe(switchMap((e) => of(e)))
+    .pipe(
+      tap((event) => event.preventDefault()),
+      switchMap((e) => of(e)),
+      share()
+    )
     .subscribe((e: WheelEvent) => {
       const rect = canvasEl.getBoundingClientRect();
       const position = {
@@ -175,13 +179,43 @@ export class CanvasService {
    * @memberof CanvasService
    */
   private _zoomOnCanvas(position: MousePosition, isZoomIn: boolean, canvasCtx: CanvasRenderingContext2D) {
+    const zoomFactor = 1.1;
+
     // incase the context is not set
     if (!canvasCtx) { return; }
     
     if (isZoomIn) {
       console.log('Zoom in', position);
+      const scale = 1 * zoomFactor;
+
+      const zoomPosition = Object.assign(position, {
+        x: position.x * zoomFactor,
+        y: position.y * zoomFactor
+      });
+
+      // Modify the transformation
+      canvasCtx.setTransform(scale, 0, 0, scale, zoomPosition.x, zoomPosition.y);
     } else {
       console.log('Zoom out', position);
+      const scale = 1 * zoomFactor;
+
+      const zoomPosition = Object.assign(position, {
+        x: position.x / zoomFactor,
+        y: position.y / zoomFactor
+      });
+
+      // Modify the transformation
+      canvasCtx.setTransform(scale, 0, 0, scale, zoomPosition.x, zoomPosition.y);
     }
   }
+
+//   redrawContext(canvasCtx: CanvasRenderingContext2D){
+//     canvasCtx.clearRect(0, 0, canvas_width, canvas_height);
+//     canvasCtx.save()
+//     canvasCtx.scale(self.data.zoom, self.data.zoom) // 
+//     canvasCtx.translate(self.data.position.left, self.data.position.top) // position second
+//     // Here We draw useful scene My task - image:
+//     canvasCtx.drawImage(self.img ,0, 0) // position 0,0 - we already prepared
+//     canvasCtx.restore(); // Restore!!!
+//  }
 }
