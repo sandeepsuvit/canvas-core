@@ -7,7 +7,7 @@ import { MousePosition } from '../interfaces/mouse-position.interface';
 export class CanvasService {
 
   constructor() { }
-  
+
   /**
    * Capture mouse events
    *
@@ -34,18 +34,18 @@ export class CanvasService {
               // pairwise lets us get the previous value to draw a line from
               // the previous point to the current point
               pairwise()
-            )
+            );
         })
       )
       .subscribe((res: [MouseEvent, MouseEvent]) => {
         const rect = canvasEl.getBoundingClientRect();
-  
+
         // previous and current position with the offset
         const prevPos = {
           x: res[0].clientX - rect.left,
           y: res[0].clientY - rect.top
         };
-  
+
         const currentPos = {
           x: res[1].clientX - rect.left,
           y: res[1].clientY - rect.top
@@ -56,15 +56,14 @@ export class CanvasService {
       });
   }
 
-   /**
+  /**
    * Capture touch events
-   * 
+   *
    * Note:-
    * https://developer.mozilla.org/en-US/docs/Web/API/Touch/clientX
    *
-   * @private
    * @param {HTMLCanvasElement} canvasEl
-   * @memberof WorkbenchComponent
+   * @memberof CanvasService
    */
   handleTouchEvents(canvasEl: HTMLCanvasElement) {
     // Get the canvas context
@@ -101,7 +100,7 @@ export class CanvasService {
         x: res[1].changedTouches[0].clientX - rect.left,
         y: res[1].changedTouches[0].clientY - rect.top
       };
-      
+
       // Triggger draw event
       this._drawOnCanvas(prevPos, currentPos, canvasCtx);
     });
@@ -152,18 +151,18 @@ export class CanvasService {
     canvasCtx.lineWidth = 3;
     canvasCtx.lineCap = 'round';
     canvasCtx.strokeStyle = '#000';
-    
+
     // start our drawing path
     canvasCtx.beginPath();
-  
+
     // we're drawing lines so we need a previous position
     if (prevPos) {
       // sets the start point
       canvasCtx.moveTo(prevPos.x, prevPos.y); // from
-  
+
       // draws a line from the start pos until the current position
       canvasCtx.lineTo(currentPos.x, currentPos.y);
-  
+
       // strokes the current path with the styles we set earlier
       canvasCtx.stroke();
     }
@@ -183,7 +182,7 @@ export class CanvasService {
 
     // incase the context is not set
     if (!canvasCtx) { return; }
-    
+
     if (isZoomIn) {
       console.log('Zoom in', position);
       const scale = 1 * zoomFactor;
