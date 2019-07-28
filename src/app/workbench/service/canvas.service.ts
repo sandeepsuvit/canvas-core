@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { fromEvent } from 'rxjs';
-import { switchMap, takeUntil, pairwise } from 'rxjs/operators';
+import { fromEvent, of } from 'rxjs';
+import { pairwise, switchMap, takeUntil } from 'rxjs/operators';
 import { MousePosition } from '../interfaces/mouse-position.interface';
 
 @Injectable()
@@ -108,6 +108,30 @@ export class CanvasService {
   }
 
   /**
+   * Capture zoom events
+   *
+   * @param {HTMLCanvasElement} canvasEl
+   * @memberof CanvasService
+   */
+  handleZoomEvents(canvasEl: HTMLCanvasElement) {
+    // Get the canvas context
+    const canvasCtx = canvasEl.getContext('2d');
+
+    fromEvent(canvasEl, 'mousewheel')
+    .pipe(switchMap((e) => of(e)))
+    .subscribe((e: WheelEvent) => {
+      const rect = canvasEl.getBoundingClientRect();
+      const position = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+
+      // Handle zoom
+      this._zoomOnCanvas(position, e.deltaY < 0, canvasCtx);
+    });
+  }
+
+  /**
    * Draw events on the canvas
    *
    * @param {MousePosition} prevPos
@@ -119,7 +143,12 @@ export class CanvasService {
   private _drawOnCanvas(prevPos: MousePosition, currentPos: MousePosition, canvasCtx: CanvasRenderingContext2D) {
     // incase the context is not set
     if (!canvasCtx) { return; }
-  
+
+    // set some default properties about the line
+    canvasCtx.lineWidth = 3;
+    canvasCtx.lineCap = 'round';
+    canvasCtx.strokeStyle = '#000';
+    
     // start our drawing path
     canvasCtx.beginPath();
   
@@ -133,6 +162,26 @@ export class CanvasService {
   
       // strokes the current path with the styles we set earlier
       canvasCtx.stroke();
+    }
+  }
+
+  /**
+   * Zoom events on the canvas
+   *
+   * @private
+   * @param {MousePosition} position
+   * @param {boolean} isZoomIn
+   * @param {CanvasRenderingContext2D} canvasCtx
+   * @memberof CanvasService
+   */
+  private _zoomOnCanvas(position: MousePosition, isZoomIn: boolean, canvasCtx: CanvasRenderingContext2D) {
+    // incase the context is not set
+    if (!canvasCtx) { return; }
+    
+    if (isZoomIn) {
+      console.log('Zoom in', position);
+    } else {
+      console.log('Zoom out', position);
     }
   }
 }

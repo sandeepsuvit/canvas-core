@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { CanvasService } from './service/canvas.service';
 
 @Component({
@@ -8,13 +8,16 @@ import { CanvasService } from './service/canvas.service';
 })
 export class WorkbenchComponent implements OnInit, AfterViewInit {
   // a reference to the canvas element from our template
-  @ViewChild('canvas') public canvas: ElementRef;
+  // @ViewChild('canvas') public canvas: ElementRef;
+  
+  @ViewChild('board', { read: ViewContainerRef }) board: ViewContainerRef;
   
   // setting a width and height for the canvas
   @Input() public width = window.innerWidth;
   @Input() public height = window.innerHeight;
 
-  private canvasCtx: CanvasRenderingContext2D;
+  private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
 
   constructor(
     private canvasService: CanvasService
@@ -35,21 +38,28 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
    */
   private _initCanvas() {
     // get the context
-    const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-    this.canvasCtx = canvasEl.getContext('2d');
-
-    // set the width and height
-    canvasEl.width = this.width;
-    canvasEl.height = this.height;
-
-    // set some default properties about the line
-    this.canvasCtx.lineWidth = 3;
-    this.canvasCtx.lineCap = 'round';
-    this.canvasCtx.strokeStyle = '#000';
+    this.canvas = this.board.element.nativeElement;
+    this.context = this.canvas.getContext('2d');
+    
+    // Resize the screen on first load
+    this.onResize(this.canvas);
     
     // Register mouse click events
-    this.canvasService.handleClickEvents(canvasEl);
+    this.canvasService.handleClickEvents(this.canvas);
     // Register touch events
-    this.canvasService.handleTouchEvents(canvasEl);
+    this.canvasService.handleTouchEvents(this.canvas);
+    // Register zoom events
+    this.canvasService.handleZoomEvents(this.canvas);
+  }
+
+  /**
+   * Set width and height
+   *
+   * @param {HTMLCanvasElement} canvas
+   * @memberof WorkbenchComponent
+   */
+  onResize(canvas: HTMLCanvasElement) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
 }

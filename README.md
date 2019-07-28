@@ -29,3 +29,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Reference
 https://medium.com/@tarik.nzl/creating-a-canvas-component-with-free-hand-drawing-with-rxjs-and-angular-61279f577415
 https://medium.com/better-programming/angular-load-external-javascript-file-dynamically-3d14dde815cb
+https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate/30410948
+https://medium.com/@OlegVaraksin/efficient-design-patterns-for-event-handling-with-rxjs-d49b56d2ae36
