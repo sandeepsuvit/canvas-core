@@ -100,6 +100,9 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
 
    /**
    * Capture touch events
+   * 
+   * Note:-
+   * https://developer.mozilla.org/en-US/docs/Web/API/Touch/clientX
    *
    * @private
    * @param {HTMLCanvasElement} canvasEl
@@ -129,13 +132,13 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
 
       // previous and current position with the offset
       const prevPos = {
-        x: res[0].touches[0].clientX - rect.left,
-        y: res[0].touches[0].clientY - rect.top
+        x: res[0].changedTouches[0].clientX - rect.left,
+        y: res[0].changedTouches[0].clientY - rect.top
       };
 
       const currentPos = {
-        x: res[1].touches[0].clientX - rect.left,
-        y: res[1].touches[0].clientY - rect.top
+        x: res[1].changedTouches[0].clientX - rect.left,
+        y: res[1].changedTouches[0].clientY - rect.top
       };
       
       // Triggger draw event
