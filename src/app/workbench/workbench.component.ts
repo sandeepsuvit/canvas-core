@@ -14,7 +14,7 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
   @Input() public width = window.innerWidth;
   @Input() public height = window.innerHeight;
 
-  private cx: CanvasRenderingContext2D;
+  private canvasCtx: CanvasRenderingContext2D;
 
   constructor(
     private canvasService: CanvasService
@@ -36,20 +36,20 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
   private _initCanvas() {
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-    this.cx = canvasEl.getContext('2d');
+    this.canvasCtx = canvasEl.getContext('2d');
 
     // set the width and height
     canvasEl.width = this.width;
     canvasEl.height = this.height;
 
     // set some default properties about the line
-    this.cx.lineWidth = 3;
-    this.cx.lineCap = 'round';
-    this.cx.strokeStyle = '#000';
+    this.canvasCtx.lineWidth = 3;
+    this.canvasCtx.lineCap = 'round';
+    this.canvasCtx.strokeStyle = '#000';
     
     // Register mouse click events
-    this.canvasService.handleClickEvents(canvasEl, this.cx);
+    this.canvasService.handleClickEvents(canvasEl);
     // Register touch events
-    this.canvasService.handleTouchEvents(canvasEl, this.cx);
+    this.canvasService.handleTouchEvents(canvasEl);
   }
 }

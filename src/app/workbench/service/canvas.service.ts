@@ -13,10 +13,12 @@ export class CanvasService {
    *
    * @private
    * @param {HTMLCanvasElement} canvasEl
-   * @param {CanvasRenderingContext2D} canvasCtx
    * @memberof WorkbenchComponent
    */
-  handleClickEvents(canvasEl: HTMLCanvasElement, canvasCtx: CanvasRenderingContext2D) {
+  handleClickEvents(canvasEl: HTMLCanvasElement) {
+    // Get the canvas context
+    const canvasCtx = canvasEl.getContext('2d');
+
     // this will capture all mousedown events from the canvas element
     fromEvent(canvasEl, 'mousedown')
       .pipe(
@@ -62,10 +64,12 @@ export class CanvasService {
    *
    * @private
    * @param {HTMLCanvasElement} canvasEl
-   * @param {CanvasRenderingContext2D} canvasCtx
    * @memberof WorkbenchComponent
    */
-  handleTouchEvents(canvasEl: HTMLCanvasElement, canvasCtx: CanvasRenderingContext2D) {
+  handleTouchEvents(canvasEl: HTMLCanvasElement) {
+    // Get the canvas context
+    const canvasCtx = canvasEl.getContext('2d');
+
     // this will capture all touch events from the canvas element
     fromEvent(canvasEl, 'touchstart')
     .pipe(
