@@ -12,12 +12,11 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
   // a reference to the canvas element from our template
   @ViewChild('canvas') public canvas: ElementRef;
   
-   // setting a width and height for the canvas
-   @Input() public width = window.innerWidth;
-   @Input() public height = window.innerHeight;
+  // setting a width and height for the canvas
+  @Input() public width = window.innerWidth;
+  @Input() public height = window.innerHeight;
 
-
-   private cx: CanvasRenderingContext2D;
+  private cx: CanvasRenderingContext2D;
 
   constructor() { }
 
@@ -25,6 +24,10 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this._initCanvas();
+  }
+
+  private _initCanvas() {
     // get the context
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
     this.cx = canvasEl.getContext('2d');
@@ -39,10 +42,10 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
     this.cx.strokeStyle = '#000';
     
     // we'll implement this method to start capturing mouse events
-    this.captureEvents(canvasEl);
+    this._captureEvents(canvasEl);
   }
 
-  private captureEvents(canvasEl: HTMLCanvasElement) {
+  private _captureEvents(canvasEl: HTMLCanvasElement) {
     // this will capture all mousedown events from the canvas element
     fromEvent(canvasEl, 'mousedown')
       .pipe(
@@ -76,11 +79,11 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
         };
   
         // this method we'll implement soon to do the actual drawing
-        this.drawOnCanvas(prevPos, currentPos);
+        this._drawOnCanvas(prevPos, currentPos);
       });
   }
 
-  private drawOnCanvas(
+  private _drawOnCanvas(
     prevPos: { x: number, y: number }, 
     currentPos: { x: number, y: number }
   ) {
