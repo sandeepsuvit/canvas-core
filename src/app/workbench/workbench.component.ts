@@ -92,7 +92,8 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
           x: res[1].clientX - rect.left,
           y: res[1].clientY - rect.top
         };
-  
+
+        // Triggger draw event
         this._drawOnCanvas(prevPos, currentPos);
       });
   }
@@ -136,7 +137,8 @@ export class WorkbenchComponent implements OnInit, AfterViewInit {
         x: res[1].touches[0].clientX - rect.left,
         y: res[1].touches[0].clientY - rect.top
       };
-
+      
+      // Triggger draw event
       this._drawOnCanvas(prevPos, currentPos);
     });
   }
