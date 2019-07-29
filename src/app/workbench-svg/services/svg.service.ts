@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { pairwise, switchMap, takeUntil } from 'rxjs/operators';
+import { MousePosition } from '../models/mouse-position.model';
 
 @Injectable()
 export class SvgService {
@@ -25,7 +26,21 @@ export class SvgService {
         );
       })
     ).subscribe((res: [MouseEvent, MouseEvent]) => {
-      console.log(res);
+      const rect = svgEl.getBoundingClientRect();
+
+      // previous and current position with the offset
+      const prevPos = {
+        x: res[0].clientX - rect.left,
+        y: res[0].clientY - rect.top
+      };
+
+      const currentPos = {
+        x: res[1].clientX - rect.left,
+        y: res[1].clientY - rect.top
+      };
+
+      // Handle draw event
+      this._drawOnSvg(prevPos, currentPos);
     });
   }
 
@@ -49,6 +64,34 @@ export class SvgService {
       )
       .subscribe((res: [TouchEvent, TouchEvent]) => {
         console.log(res);
+        const rect = svgEl.getBoundingClientRect();
+
+        // previous and current position with the offset
+        const prevPos = {
+          x: res[0].changedTouches[0].clientX - rect.left,
+          y: res[0].changedTouches[0].clientY - rect.top
+        };
+
+        const currentPos = {
+          x: res[1].changedTouches[0].clientX - rect.left,
+          y: res[1].changedTouches[0].clientY - rect.top
+        };
+
+        // Handle draw event
+        this._drawOnSvg(prevPos, currentPos);
       });
+  }
+
+  /**
+   * Draw on svg
+   *
+   * @private
+   * @param {MousePosition} prevPos
+   * @param {MousePosition} currentPos
+   * @memberof SvgService
+   */
+  private _drawOnSvg(prevPos: MousePosition, currentPos: MousePosition) {
+    console.log(prevPos);
+    console.log(currentPos);
   }
 }
